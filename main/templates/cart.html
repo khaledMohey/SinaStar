@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block title %}Cart - SinaStar{% endblock %}
+{% block content %}
+<div class="container py-4">
+  <h2 class="mb-4">🛒 My Cart</h2>
+
+  <div class="card bg-dark border-0 shadow-sm">
+    <div class="card-body p-0">
+      <div class="table-responsive">
+        <table class="table table-dark table-striped align-middle mb-0">
+          <thead>
+            <tr>
+              <th>Item</th>
+              <th class="text-center">Quantity</th>
+              <th class="text-end">Price</th>
+              <th class="text-end">Total</th>
+              <th class="text-center">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for item in cart_items %}
+            <tr>
+              <td>{{ item.inventory_item.material.name }}</td>
+              <td class="text-center">{{ item.quantity }}</td>
+              <td class="text-end">${{ item.inventory_item.addition_cost }}</td>
+              <td class="text-end">${{ item.total_price }}</td>
+              <td class="text-center">
+                <a href="{% url 'remove_from_cart' item.id %}" class="btn btn-sm btn-outline-danger">Remove</a>
+              </td>
+            </tr>
+            {% empty %}
+            <tr>
+              <td colspan="5" class="text-center text-muted">Your cart is empty.</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="d-flex justify-content-between align-items-center mt-3">
+    <h4 class="mb-0">الإجمالي: <strong>${{ total_cost }}</strong></h4>
+    <div>
+      <a href="{% url 'home' %}" class="btn btn-outline-light me-2">تابع التسوق</a>
+      <button class="btn btn-success" disabled>إتمام الشراء (قريباً)</button>
+    </div>
+  </div>
+</div>
+{% endblock %}

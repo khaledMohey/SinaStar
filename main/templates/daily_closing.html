@@ -1,0 +1,140 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="container py-5">
+  <h2 class="mb-4">📊 Daily Closing Report</h2>
+
+  <!-- 🟢 فلتر التاريخ -->
+  <form method="get" class="mb-4 d-flex">
+    <input type="date" name="date" value="{{ selected_date }}" class="form-control me-2">
+    <button type="submit" class="btn btn-primary">🔎 عرض</button>
+  </form>
+
+  <!-- ملخص السكاشن -->
+  <h4>Summary by Section</h4>
+  <table class="table table-bordered table-striped">
+    <thead>
+      <tr>
+        <th>Section</th>
+        <th>Total Quantity</th>
+        <th>Total Sales</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for sec in section_summary %}
+      <tr>
+        <td>{{ sec.section }}</td>
+        <td>{{ sec.total_qty }}</td>
+        <td>{{ sec.total_sales }} EGP</td>
+      </tr>
+      {% empty %}
+      <tr>
+        <td colspan="3" class="text-center">No sales for this date</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <!-- إجماليات وصافي اليوم -->
+  <h4 class="mt-4">إجمالي اليوم (حسب القسم)</h4>
+  <table class="table table-bordered">
+    <thead>
+      <tr>
+        <th>القسم</th>
+        <th class="text-end">إجمالي المبيعات</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for name, total in section_totals.items %}
+      <tr>
+        <td>{{ name }}</td>
+        <td class="text-end">{{ total }} EGP</td>
+      </tr>
+      {% endfor %}
+      <tr class="table-secondary">
+        <td><strong>الإجمالي الكلي</strong></td>
+        <td class="text-end"><strong>{{ gross_total }} EGP</strong></td>
+      </tr>
+      <tr class="table-success">
+        <td>+ التبس</td>
+        <td class="text-end">+ {{ total_tips }} EGP</td>
+      </tr>
+      <tr class="table-danger">
+        <td>- النسريات</td>
+        <td class="text-end">- {{ total_nesrayat }} EGP</td>
+      </tr>
+      <tr class="table-primary">
+        <td><strong>صافي اليوم</strong></td>
+        <td class="text-end"><strong>{{ net_total }} EGP</strong></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- تفاصيل الأصناف -->
+  <h4 class="mt-5">Details by Items</h4>
+  <table class="table table-bordered table-striped">
+    <thead>
+      <tr>
+        <th>Section</th>
+        <th>Item</th>
+        <th>Quantity</th>
+        <th>Total Sales</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for item in item_summary %}
+      <tr>
+        <td>{{ item.menuitem__section }}</td>
+        <td>{{ item.menuitem__name }}</td>
+        <td>{{ item.total_qty }}</td>
+        <td>{{ item.total_sales }} EGP</td>
+      </tr>
+      {% empty %}
+      <tr>
+        <td colspan="4" class="text-center">No items sold for this date</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <!-- 🟢 النسريات والتبس -->
+  <h4 class="mt-5">💰 Extra Expenses & Tips</h4>
+  <table class="table table-bordered table-striped">
+    <thead>
+      <tr>
+        <th>Category</th>
+        <th>Amount</th>
+        <th>Created At</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for exp in expenses %}
+      <tr>
+        <td>{{ exp.get_category_display }}</td>
+        <td>{{ exp.amount }} EGP</td>
+        <td>{{ exp.created_at|date:"d M Y H:i" }}</td>
+      </tr>
+      {% empty %}
+      <tr>
+        <td colspan="3" class="text-center">No expenses for this date</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+    <tfoot>
+      <tr class="table-secondary fw-bold">
+        <td>إجمالي النسريات</td>
+        <td colspan="2">{{ total_nesrayat }} EGP</td>
+      </tr>
+      <tr class="table-secondary fw-bold">
+        <td>إجمالي التبس</td>
+        <td colspan="2">{{ total_tips }} EGP</td>
+      </tr>
+      <tr class="table-dark text-white fw-bold">
+        <td>الإجمالي الكلي</td>
+        <td colspan="2">{{ total_all }} EGP</td>
+      </tr>
+    </tfoot>
+  </table>
+</div>
+
+{% endblock %}

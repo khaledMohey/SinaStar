@@ -1,0 +1,127 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Home - SinaStar{% endblock %}
+
+{% block content %}
+<style>
+    .full-height { min-height: calc(100vh - 160px); }
+    .menu-card {
+        position: relative;
+        height: 240px;
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 8px 20px rgba(0,0,0,0.6);
+        cursor: pointer;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        background: #111;
+    }
+    .menu-card img {
+        width: 100%; height: 100%; object-fit: cover;
+        filter: brightness(68%); transition: filter 0.3s ease;
+    }
+    .menu-card:hover img { filter: brightness(50%); }
+    .menu-card:hover { transform: scale(1.03); box-shadow: 0 12px 25px rgba(0,0,0,0.8); }
+    .menu-title {
+        position: absolute; bottom: 18px; left: 18px;
+        font-size: 2rem; font-weight: bold; color: white;
+        text-shadow: 2px 2px 10px rgba(0,0,0,0.8);
+    }
+    @media (max-width: 768px) { .menu-title { font-size: 1.5rem; } }
+</style>
+
+<!-- KPIs -->
+<div class="row g-3 mb-4">
+  <div class="col-6 col-md">
+    <div class="card bg-dark border-0 h-100 shadow-sm">
+      <div class="card-body text-white">
+        <p class="text-uppercase text-white-50 mb-1 small">الطلبات اليوم</p>
+        <h3 class="mb-0 text-white">{{ kpi.orders|default:0 }}</h3>
+      </div>
+    </div>
+  </div>
+  <div class="col-6 col-md">
+    <div class="card bg-dark border-0 h-100 shadow-sm">
+      <div class="card-body text-white">
+        <p class="text-uppercase text-white-50 mb-1 small">مبيعات اليوم</p>
+        <h3 class="mb-0 text-white">${{ kpi.sales|default:0 }}</h3>
+      </div>
+    </div>
+  </div>
+  <div class="col-6 col-md">
+    <div class="card bg-dark border-0 h-100 shadow-sm">
+      <div class="card-body text-white">
+        <p class="text-uppercase text-white-50 mb-1 small">غير مدفوع</p>
+        <h3 class="mb-0 text-white">{{ kpi.unpaid|default:0 }}</h3>
+      </div>
+    </div>
+  </div>
+  <div class="col-6 col-md">
+    <div class="card bg-dark border-0 h-100 shadow-sm">
+      <div class="card-body text-white">
+        <p class="text-uppercase text-white-50 mb-1 small">قيد التحضير</p>
+        <h3 class="mb-0 text-white">{{ kpi.pending_items|default:0 }}</h3>
+      </div>
+    </div>
+  </div>
+  <div class="col-6 col-md">
+    <div class="card bg-dark border-0 h-100 shadow-sm">
+      <div class="card-body text-white">
+        <p class="text-uppercase text-white-50 mb-1 small">مخزون منخفض</p>
+        <h3 class="mb-0 text-white">{{ kpi.low_stock|default:0 }}</h3>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Quick Actions -->
+<div class="row g-3 mb-4">
+  <div class="col-sm-6 col-md-3">
+    <a href="{% url 'pending_items' %}" class="btn btn-primary w-100 py-3">📋 شاشة الطلبات</a>
+  </div>
+  <div class="col-sm-6 col-md-3">
+    <a href="{% url 'daily_closing' %}" class="btn btn-outline-light w-100 py-3">🧾 التقارير</a>
+  </div>
+  <div class="col-sm-6 col-md-3">
+    <a href="{% url 'inventory' %}" class="btn btn-warning w-100 py-3">📦 المخزون</a>
+  </div>
+  <div class="col-sm-6 col-md-3">
+    <a href="{% url 'waiter_items' %}" class="btn btn-success w-100 py-3">🍽️ صفحة الويتر</a>
+  </div>
+</div>
+
+<!-- Menus -->
+<div class="fade-overlay" id="fadeOverlay"></div>
+<div class="container-fluid full-height">
+    <div class="row g-4">
+        <div class="col-md-4 col-12">
+            <div class="menu-card" data-url="{% url 'takeaway' %}">
+                <img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836" alt="Takeaway">
+                <div class="menu-title">🥡 Takeaway</div>
+            </div>
+        </div>
+        <div class="col-md-4 col-12">
+            <div class="menu-card" data-url="{% url 'in_cafe' %}">
+                <img src="https://images.unsplash.com/photo-1510626176961-4b57d4fbad03" alt="In Caffe">
+                <div class="menu-title">☕ In Caffe</div>
+            </div>
+        </div>
+        <div class="col-md-4 col-12">
+            <div class="menu-card" data-url="{% url 'qeta3' %}">
+                <img src="https://64.media.tumblr.com/9cb8c6843e371132234e3a5a4268d184/tumblr_nlxq56VpxK1qkhwado1_640.jpg" alt="Saqala">
+                <div class="menu-title">☕ Qeta3</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+  document.querySelectorAll(".menu-card").forEach(card => {
+      card.addEventListener("click", function () {
+          let url = this.getAttribute("data-url");
+          let overlay = document.getElementById("fadeOverlay");
+          overlay.classList.add("show");
+          setTimeout(() => { window.location.href = url; }, 500);
+      });
+  });
+</script>
+{% endblock %}
