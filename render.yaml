@@ -1,0 +1,17 @@
+services:
+  - type: web
+    name: sinastar
+    env: python
+    plan: free
+    buildCommand: pip install -r requirements.txt && python manage.py collectstatic --noinput
+    startCommand: gunicorn sinastarsystem.wsgi:application
+    autoDeploy: true
+    envVars:
+      - key: DJANGO_SECRET_KEY
+        sync: false
+      - key: DJANGO_DEBUG
+        value: "False"
+      - key: ALLOWED_HOSTS
+        value: "localhost,127.0.0.1"
+      # أضف CLOUDINARY_URL هنا إذا احتجت تخزين الميديا خارجياً
+
