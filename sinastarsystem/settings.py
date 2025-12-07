@@ -31,9 +31,8 @@ load_dotenv()
 SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'django-insecure-bqn0e3=of(_1(x-()ths_z5f#!^(*korek6nf2e*x#k@7*0g&p')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-# نجعل القيمة الافتراضية True للتطوير المحلي حتى تظهر ملفات الميديا/الصور
-# ويمكن ضبطها إلى False من المتغير البيئي DJANGO_DEBUG عند الحاجة.
-DEBUG = os.getenv('DJANGO_DEBUG', 'True') == 'True'
+# افتراضيًا False للإنتاج، ويمكنك تفعيلها محليًا بوضع DJANGO_DEBUG=True
+DEBUG = os.getenv('DJANGO_DEBUG', 'False') == 'True'
 
 # settings.py
 
@@ -177,6 +176,10 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
 ]
+
+# Whitenoise for static files on Render/production
+MIDDLEWARE.insert(1, "whitenoise.middleware.WhiteNoiseMiddleware")
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 # Media files (Uploaded files)
 MEDIA_URL = '/media/'
